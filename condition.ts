@@ -12,13 +12,13 @@ export interface CompiledExpression {
 export type ComparatorCondition<T> = [
 	keyof T | string,
 	Comparator,
-	string | number | Date,
+	string | number | Date | boolean,
 ];
 export type BetweenCondition<T> = [
 	keyof T | string,
 	'between',
-	string | number | Date,
-	string | number | Date,
+	string | number | Date | boolean,
+	string | number | Date | boolean,
 ];
 export type ExistsCondition<T> = [keyof T, 'exists'];
 export type NotExistsCondition<T> = [keyof T, 'not_exists'];
@@ -26,10 +26,14 @@ export type BeginsWithCondition<T> = [keyof T, 'begins_with', string];
 export type ContainsCondition<T> = [
 	keyof T | string,
 	'contains',
-	string | number | Date,
+	string | number | Date | boolean,
 ];
 export type SizeCondition<T> = [keyof T, 'size', Comparator, number];
-export type InCondition<T> = [keyof T, 'in', (string | number | Date)[]];
+export type InCondition<T> = [
+	keyof T,
+	'in',
+	(string | number | Date | boolean)[],
+];
 
 export type Condition<T> =
 	| ComparatorCondition<T>
