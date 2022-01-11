@@ -1,6 +1,6 @@
 {
   "name": "@faceteer/expression-builder",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "An expression builder for Dynamo DB",
   "main": "condition.js",
   "scripts": {
