@@ -118,9 +118,7 @@ export function condition<T = any>(
 			const namePlaceholder = `#${placeholder}`;
 			const valuePlaceholder = `:${placeholder}`;
 			compiledExpression.names[namePlaceholder] = `${expression[0]}`;
-			compiledExpression.values[valuePlaceholder] = Converter.input(
-				expression[2],
-			);
+			compiledExpression.values[valuePlaceholder] = getValue(expression[2]);
 			compiledExpression.expression = `${namePlaceholder} ${expression[1]} ${valuePlaceholder}`;
 			return compiledExpression;
 		}
@@ -129,9 +127,7 @@ export function condition<T = any>(
 			const namePlaceholder = `#${placeholder}`;
 			const valuePlaceholder = `:${placeholder}`;
 			compiledExpression.names[namePlaceholder] = `${expression[0]}`;
-			compiledExpression.values[valuePlaceholder] = Converter.input(
-				expression[2],
-			);
+			compiledExpression.values[valuePlaceholder] = getValue(expression[2]);
 			compiledExpression.expression = `begins_with (${namePlaceholder}, ${valuePlaceholder})`;
 			return compiledExpression;
 		}
@@ -140,9 +136,7 @@ export function condition<T = any>(
 			const namePlaceholder = `#${placeholder}`;
 			const valuePlaceholder = `:${placeholder}`;
 			compiledExpression.names[namePlaceholder] = `${expression[0]}`;
-			compiledExpression.values[valuePlaceholder] = Converter.input(
-				expression[2],
-			);
+			compiledExpression.values[valuePlaceholder] = getValue(expression[2]);
 			compiledExpression.expression = `contains (${namePlaceholder}, ${valuePlaceholder})`;
 			return compiledExpression;
 		}
@@ -152,10 +146,8 @@ export function condition<T = any>(
 			const leftValuePlaceholder = `:${placeholder}_L`;
 			const rightValuePlaceholder = `:${placeholder}_R`;
 			compiledExpression.names[namePlaceholder] = `${expression[0]}`;
-			compiledExpression.values[leftValuePlaceholder] = Converter.input(
-				expression[2],
-			);
-			compiledExpression.values[rightValuePlaceholder] = Converter.input(
+			compiledExpression.values[leftValuePlaceholder] = getValue(expression[2]);
+			compiledExpression.values[rightValuePlaceholder] = getValue(
 				expression[3],
 			);
 			compiledExpression.expression = `${namePlaceholder} BETWEEN ${leftValuePlaceholder} AND ${rightValuePlaceholder}`;
@@ -180,9 +172,7 @@ export function condition<T = any>(
 			const namePlaceholder = `#${placeholder}`;
 			const valuePlaceholder = `:${placeholder}`;
 			compiledExpression.names[namePlaceholder] = `${expression[0]}`;
-			compiledExpression.values[valuePlaceholder] = Converter.input(
-				expression[3],
-			);
+			compiledExpression.values[valuePlaceholder] = getValue(expression[3]);
 			compiledExpression.expression = `size(${namePlaceholder}) ${expression[2]} ${valuePlaceholder})`;
 			return compiledExpression;
 		}
@@ -193,7 +183,7 @@ export function condition<T = any>(
 			const valuePlaceholders: string[] = [];
 			for (const [index, listItem] of expression[2].entries()) {
 				const valuePlaceholder = `:${placeholder}I${index}`;
-				compiledExpression.values[valuePlaceholder] = Converter.input(listItem);
+				compiledExpression.values[valuePlaceholder] = getValue(listItem);
 				valuePlaceholders.push(valuePlaceholder);
 			}
 
@@ -206,6 +196,14 @@ export function condition<T = any>(
 		default:
 			throw new Error(`Operator ${expression[1]} is not defined`);
 	}
+}
+
+function getValue(data: any) {
+	const value = Converter.input(data);
+	if (!value) {
+		throw new Error('Unable to convert the value for the specified condition');
+	}
+	return value;
 }
 
 export type FilterCondition<T> =
